@@ -7,6 +7,13 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.remoting.transport.Address;
 import org.infinispan.remoting.transport.Transport;
+import org.infinispan.remoting.transport.jgroups.JGroupsTransport;
+import org.jgroups.Channel;
+import org.jgroups.JChannel;
+import org.jgroups.demos.Draw;
+import org.jgroups.fork.ForkChannel;
+import org.jgroups.protocols.FRAG2;
+import org.jgroups.stack.ProtocolStack;
 import org.jgroups.util.Util;
 
 import javax.transaction.SystemException;
@@ -22,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HijackTest {
     protected EmbeddedCacheManager   mgr;
     protected Cache<Integer,byte[]>  cache;
+    protected Channel                fork_ch;
     protected TransactionManager     txmgr;
     protected Address                local_addr;
     protected boolean                sync=true;
@@ -56,6 +64,18 @@ public class HijackTest {
                 else
                     System.out.println("cache already contains " + size + " elements");
             }
+
+            JGroupsTransport transport=(JGroupsTransport)cache.getAdvancedCache().getRpcManager().getTransport();
+            Channel main_ch=transport.getChannel();
+            fork_ch=new ForkChannel(main_ch, "hijack-stack", "lead-hijacker",
+                                    true,ProtocolStack.ABOVE,FRAG2.class);
+
+            Draw draw=new Draw((JChannel)fork_ch);
+            fork_ch.connect("ignored");
+
+            System.out.println("** message from hijacker: starting Draw on the hijacked channel **");
+            draw.go();
+
             eventLoop();
         }
         catch(Throwable t) {

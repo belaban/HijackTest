@@ -5,7 +5,7 @@
 
     <global>
 
-        <transport clusterName="${site}-cluster" siteId="${site:LON}">
+        <transport clusterName="HijackCluster">
             <properties>
                 <property name="configurationFile" value="local.xml"/>
             </properties>
@@ -22,17 +22,6 @@
             <sync/>
         </clustering>
 
-
-        <sites>
-            <backups>
-                <backup site="LON" backupFailurePolicy="WARN" strategy="ASYNC" timeout="12000">
-                </backup>
-                <backup site="NYC" backupFailurePolicy="WARN" strategy="ASYNC" timeout="12000">
-                </backup>
-                <backup site="SFO" backupFailurePolicy="WARN" strategy="ASYNC" timeout="12000">
-                </backup>
-            </backups>
-        </sites>
     </default>
 
     <namedCache name="clusteredCache">

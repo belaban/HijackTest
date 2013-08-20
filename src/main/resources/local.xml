@@ -6,7 +6,7 @@
 
 <config xmlns="urn:org:jgroups"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/JGroups-3.3.xsd">
+        xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/JGroups-3.4.xsd">
     <UDP
          mcast_addr="${mcast_addr:232.1.1.1}"
          mcast_port="${mcast_port:50000}"
@@ -75,9 +75,5 @@
          min_threshold="0.4"/>
     <FRAG2 frag_size="60000"  />
     <RSVP/>
-    <!--<FORWARD_TO_COORD />-->
-    <relay.RELAY2 site="${site:LON}"
-                  config="relay.xml"
-                  relay_multicasts="false" enable_address_tagging="false"/>
 </config>
 
